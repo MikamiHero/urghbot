@@ -41,6 +41,7 @@ client.on("chat", async (channel, user, message, self) => {
   if (message === "urghbot yes") {
     client.say(twitchChannel, `PogChamp`);
   }
+  // If someone wants to scold UrghBot
   if (message === "urghbot no") {
     client.say(twitchChannel, "BibleThump");
   }
