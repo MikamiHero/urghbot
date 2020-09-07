@@ -2,6 +2,9 @@ const WordPos = require("wordpos");
 const pluralize = require("pluralize");
 const { randInt } = require("./math.js");
 
+// List of words to ignore because it gets spammy (e.g., articles)
+const ignoredWords = ["i", "am", "why", "it", "a", "an", "the", "or"];
+
 const messageToUgh = async (message) => {
   // find all the nouns in the message
   const nouns = await findNouns(message);
@@ -43,7 +46,7 @@ const findNouns = async (str) => {
 };
 
 // words to exclude from nouns
-const excludedWord = (word) => ["i", "am"].includes(word.toLowerCase());
+const excludedWord = (word) => ignoredWords.includes(word.toLowerCase());
 
 // capitalize first character of a string
 const capitalize = (str) => {
