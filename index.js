@@ -52,11 +52,11 @@ client.on("chat", async (channel, user, message, self) => {
     return;
   }
   // If someone wants to praise UrghBot
-  else if (message === "urghbot yes") {
+  else if (message === "urghbot yes" || message === "@urghbot yes") {
     client.say(twitchChannel, `PogChamp`);
   }
   // If someone wants to scold UrghBot
-  else if (message === "urghbot no") {
+  else if (message === "urghbot no" || message === "@urghbot no") {
     client.say(twitchChannel, "BibleThump");
   }
   // If someone wants to 'ugh' or 'urgh' themselves
