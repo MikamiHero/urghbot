@@ -3,6 +3,7 @@ const tmi = require("tmi.js");
 const config = require("./config");
 const { randInt } = require("./utils/math.js");
 const { messageToUgh } = require("./utils/stringManip");
+const { addUserToIgnore, removeUserToIgnore, findIgnoredUser } = require("./utils/db");
 
 // MikamiHero channel name
 const twitchChannel = "MikamiHero";
@@ -48,6 +49,8 @@ client.on("connected", (address, port) => {
 // Commands and/or certain character triggers
 client.on("chat", async (channel, user, message, self) => {
   try {
+    // Setting up the display name of the author of the message
+    const twitchDisplayName = user["display-name"];
     // Don't want to react to itself
     if (self) {
       return;
@@ -55,11 +58,21 @@ client.on("chat", async (channel, user, message, self) => {
     // TODO: add logic to return if the user is meant to be ignored
     // If someone wants to have themselves ignored by urghbot
     else if (message === "!ignore") {
-      client.say(twitchChannel, `Ugh. Bye. <ignores ${user["display-name"]}>`);
+      const ignoredUser = await addUserToIgnore({ username: twitchDisplayName });
+      if (!ignoredUser) {
+        client.say(twitchChannel, `${twitchDisplayName}, you're already being ignored. Ugh.`);
+      } else {
+        client.say(twitchChannel, `Ugh. Bye. <ignores ${twitchDisplayName}>`);
+      }
     }
     // If someone wants to be acknowledged by urghbot again
     else if (message === "!unignore") {
-      client.say(twitchChannel, `Ugh. Fine. <unignores ${user["display-name"]}>`);
+      const unignoredUser = await removeUserToIgnore({ username: twitchDisplayName });
+      if (!unignoredUser) {
+        client.say(twitchChannel, `${twitchDisplayName}, you weren't ignored in the first place. Ugh.`);
+      } else {
+        client.say(twitchChannel, `Ugh. Fine. <unignores ${twitchDisplayName}>`);
+      }
     }
     // If someone wants to praise UrghBot
     else if (message === "urghbot yes" || message === "@urghbot yes") {
@@ -71,7 +84,7 @@ client.on("chat", async (channel, user, message, self) => {
     }
     // If someone wants to 'ugh' or 'urgh' themselves
     else if (message === "!ugh" || message == "!urgh") {
-      client.say(twitchChannel, `Ugh. ${user["display-name"]}.`);
+      client.say(twitchChannel, `Ugh. ${twitchDisplayName}.`);
     }
     // If the message contains 'glitches'
     else if (message.toLowerCase().includes("glitches")) {
@@ -80,14 +93,20 @@ client.on("chat", async (channel, user, message, self) => {
       //  Generate random number and check if it's divisible by 13 (15/200 numbers = 7.5% chance of firing)
       const x = randInt(1, 200);
       if (x % 13 === 0) {
-        // If they are the lucky one, 'ugh'-ify the user's message (if there is a noun in it)
-        const ughString = await messageToUgh(message);
-        if (ughString !== "") {
-          client.say(twitchChannel, ughString);
+        // First check if the user is meant to be ignored or not
+        const userToIgnore = await findIgnoredUser({ username: twitchDisplayName });
+        // If they are not found in the ignored user DB, then proceed to ugh their message
+        if (!userToIgnore) {
+          // If they are the lucky one, 'ugh'-ify the user's message (if there is a noun in it)
+          const ughString = await messageToUgh(message);
+          if (ughString !== "") {
+            client.say(twitchChannel, ughString);
+          }
         }
       }
     }
   } catch (err) {
     client.say(twitchChannel, `@${twitchChannel}, I think we have a problem...`);
+    console.log(err);
   }
 });
