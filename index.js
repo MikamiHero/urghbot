@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const tmi = require("tmi.js");
 const config = require("./config");
 const { randInt } = require("./utils/math.js");
@@ -21,6 +22,19 @@ const options = {
   },
   channels: [twitchChannel],
 };
+
+// DB setup
+mongoose.connect(process.env.MONGODB_URGHBOT_URI || config.mongodbUrghBotURI, {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useUnifiedTopology: true,
+});
+
+// DB open listener
+const connection = mongoose.connection;
+connection.once("open", () => {
+  console.log("Ugh. MongoDB database connection established successfully");
+});
 
 const client = new tmi.client(options);
 
