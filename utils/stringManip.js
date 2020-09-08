@@ -3,7 +3,7 @@ const pluralize = require("pluralize");
 const { randInt } = require("./math.js");
 
 // List of words to ignore because it gets spammy (e.g., articles)
-const ignoredWords = ["i", "am", "why", "it", "a", "an", "the", "or"];
+const ignoredWords = ["i", "am", "why", "it", "a", "an", "the", "or", "so"];
 
 // MikamiHero emotes to potentially urghify
 const mikamiHeroEmotes = [
