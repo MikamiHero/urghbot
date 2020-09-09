@@ -83,11 +83,11 @@ client.on("chat", async (channel, user, message, self) => {
       client.say(twitchChannel, "BibleThump");
     }
     // If the message contains 'yeah nah' or 'yea nah'
-    else if (message.toLowercase().includes("yeah nah") || message.toLowercase().includes("yea nah")) {
+    else if (message.toLowerCase().includes("yeah nah") || message.toLowerCase().includes("yea nah")) {
       client.say(twitchChannel, "Ugh. Nah yeah Kappa");
     }
     // If the message contains 'nah yeah' or 'nah yeah'
-    else if (message.toLowercase().includes("nah yeah") || message.toLowercase().includes("nah yeah")) {
+    else if (message.toLowerCase().includes("nah yeah") || message.toLowerCase().includes("nah yeah")) {
       client.say(twitchChannel, "Ugh. Yeah nah Kappa");
     }
     // If someone wants to 'ugh'/'urgh' themselves or something else
