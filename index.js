@@ -90,9 +90,22 @@ client.on("chat", async (channel, user, message, self) => {
     else if (message.includes("nah yeah") || message.includes("nah yeah")) {
       client.say(twitchChannel, "Ugh. Yeah nah Kappa");
     }
-    // If someone wants to 'ugh' or 'urgh' themselves
-    else if (message === "!ugh" || message == "!urgh") {
-      client.say(twitchChannel, `Ugh. ${twitchDisplayName}.`);
+    // If someone wants to 'ugh'/'urgh' themselves or something else
+    else if (message.startsWith("!ugh", 0) || message.startsWith("!urgh", 0)) {
+      const urghStringSplit = message.split(" ");
+      console.log(urghStringSplit);
+      if (urghStringSplit.length === 1) {
+        client.say(twitchChannel, `Ugh. ${twitchDisplayName}.`);
+      } else {
+        const thingToUrgh = urghStringSplit[1];
+        if (thingToUrgh === "") {
+          // Twitch doesn't allow messages to be ended with more than a single space (it adds a period afterwards and pops the whitespace out)
+          // Keeping this logic here just in case it changes.
+          client.say(twitchChannel, `Ugh. Nothing.`);
+        } else {
+          client.say(twitchChannel, `Ugh. ${thingToUrgh}.`);
+        }
+      }
     }
     // If the message contains 'glitches'
     else if (message.toLowerCase().includes("glitches")) {
