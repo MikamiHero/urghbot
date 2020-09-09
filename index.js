@@ -82,6 +82,14 @@ client.on("chat", async (channel, user, message, self) => {
     else if (message === "urghbot no" || message === "@urghbot no") {
       client.say(twitchChannel, "BibleThump");
     }
+    // If the message contains 'yeah nah' or 'yea nah'
+    else if (message.includes("yeah nah") || message.includes("yea nah")) {
+      client.say(twitchChannel, "Ugh. Nah yeah Kappa");
+    }
+    // If the message contains 'nah yeah' or 'nah yeah'
+    else if (message.includes("nah yeah") || message.includes("nah yeah")) {
+      client.say(twitchChannel, "Ugh. Yeah nah Kappa");
+    }
     // If someone wants to 'ugh' or 'urgh' themselves
     else if (message === "!ugh" || message == "!urgh") {
       client.say(twitchChannel, `Ugh. ${twitchDisplayName}.`);
