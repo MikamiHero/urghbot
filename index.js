@@ -103,7 +103,7 @@ client.on("chat", async (channel, user, message, self) => {
           client.say(twitchChannel, `Ugh. Nothing.`);
         } else {
           // Joining all the other arguments back
-          const joinedThingsToUrgh = thingsToUrgh.join("");
+          const joinedThingsToUrgh = thingsToUrgh.join(" ");
           client.say(twitchChannel, `Ugh. ${joinedThingsToUrgh}`);
         }
       }
