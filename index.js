@@ -96,13 +96,15 @@ client.on("chat", async (channel, user, message, self) => {
       if (urghStringSplit.length === 1) {
         client.say(twitchChannel, `Ugh. ${twitchDisplayName}.`);
       } else {
-        const thingToUrgh = urghStringSplit[1];
-        if (thingToUrgh === "") {
+        const thingsToUrgh = urghStringSplit.splice(1);
+        if (thingsToUrgh === "") {
           // Twitch doesn't allow messages to be ended with more than a single space (it adds a period afterwards and pops the whitespace out)
           // Keeping this logic here just in case it changes.
           client.say(twitchChannel, `Ugh. Nothing.`);
         } else {
-          client.say(twitchChannel, `Ugh. ${thingToUrgh}`);
+          // Joining all the other arguments back
+          const joinedThingsToUrgh = thingsToUrgh.join("");
+          client.say(twitchChannel, `Ugh. ${joinedThingsToUrgh}`);
         }
       }
     }
