@@ -93,7 +93,6 @@ client.on("chat", async (channel, user, message, self) => {
     // If someone wants to 'ugh'/'urgh' themselves or something else
     else if (message.startsWith("!ugh", 0) || message.startsWith("!urgh", 0)) {
       const urghStringSplit = message.split(" ");
-      console.log(urghStringSplit);
       if (urghStringSplit.length === 1) {
         client.say(twitchChannel, `Ugh. ${twitchDisplayName}.`);
       } else {
@@ -103,7 +102,7 @@ client.on("chat", async (channel, user, message, self) => {
           // Keeping this logic here just in case it changes.
           client.say(twitchChannel, `Ugh. Nothing.`);
         } else {
-          client.say(twitchChannel, `Ugh. ${thingToUrgh}.`);
+          client.say(twitchChannel, `Ugh. ${thingToUrgh}`);
         }
       }
     }
