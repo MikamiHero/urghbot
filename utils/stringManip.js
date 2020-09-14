@@ -42,6 +42,11 @@ const messageToUgh = async (message) => {
     const urghMessage = `Ugh. ${randomNoun}`;
     return urghMessage;
   }
+  // If word is 'parent', do another meme instead of 'urgh'
+  if (randomNoun === "parent") {
+    const urghMessage = "lolparents.";
+    return urghMessage;
+  }
   // If the random noun selected isn't a MikamiHero, pluralize and add period at the end. Then 'ugh' it.
   else {
     const pluralizedNoun = pluralize.plural(randomNoun);
