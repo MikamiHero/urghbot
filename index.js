@@ -4,6 +4,7 @@ const config = require("./config");
 const { randInt } = require("./utils/math.js");
 const { messageToUgh } = require("./utils/stringManip");
 const { addUserToIgnore, removeUserToIgnore, findIgnoredUser } = require("./utils/db");
+const { isProperUrghCommand } = require("./utils/urghLogic");
 
 // MikamiHero channel name
 const twitchChannel = "MikamiHero";
@@ -91,7 +92,7 @@ client.on("chat", async (channel, user, message, self) => {
       client.say(twitchChannel, "Ugh. Yeah nah Kappa");
     }
     // If someone wants to 'ugh'/'urgh' themselves or something else
-    else if (message.startsWith("!ugh", 0) || message.startsWith("!urgh", 0)) {
+    else if (isProperUrghCommand(message) === true) {
       const urghStringSplit = message.split(" ");
       if (urghStringSplit.length === 1) {
         client.say(twitchChannel, `Ugh. ${twitchDisplayName}.`);
