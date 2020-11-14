@@ -34,7 +34,7 @@ const twitchGetChannelIdByUsername = async ({ username }) => {
   };
   // Requesting for the Twitch user (which will contain their ID)
   const twitchUser = await rp(options);
-  return twitchUser.id;
+  return twitchUser.data[0].id;
 };
 
 module.exports = { twitchGetChannelIdByUsername };

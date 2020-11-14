@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 const ignoredUserSchema = new Schema(
   {
     username: { type: String, required: true },
+    channel: { type: String, required: true },
   },
   {
     timestamps: true,
