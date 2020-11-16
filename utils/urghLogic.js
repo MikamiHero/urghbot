@@ -4,4 +4,6 @@ const isProperUrghCommand = (message) => {
   return startOfMessage === "!urgh" || startOfMessage === "!ugh";
 };
 
-module.exports = { isProperUrghCommand };
+const isInUrghBotChannel = (channel) => channel === "#urghbot";
+
+module.exports = { isProperUrghCommand, isInUrghBotChannel };
