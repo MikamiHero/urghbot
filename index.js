@@ -11,7 +11,7 @@ const {
   removeUrghbotFromChannel,
   findAllChannelsForUrghbot,
 } = require("./utils/db");
-const { twitchGetChannelIdByUsername } = require("./utils/twitch");
+const { twitchGetChannelIdByUsername, twitchGetAllChannelUsernames } = require("./utils/twitch");
 const { restartBot } = require("./utils/sys");
 const { isProperUrghCommand, isInUrghBotChannel } = require("./utils/urghLogic");
 
@@ -54,7 +54,9 @@ const initialOptions = {
     });
     // Finding all the channels that Urghbot has permissions to interact in (from DB)
     const channels = await findAllChannelsForUrghbot();
-    const twitchChannelsForUrghBot = initialOptions.channels.concat(channels);
+    // For each channel ID, find their username (don't want to store because it can change)
+    const channelUsernames = await twitchGetAllChannelUsernames({ channelIds: channels });
+    const twitchChannelsForUrghBot = initialOptions.channels.concat(channelUsernames);
 
     // TODO: Make do a seed script in case it gets nuked?
     const options = { ...initialOptions, channels: twitchChannelsForUrghBot };
@@ -76,6 +78,11 @@ const initialOptions = {
         const twitchDisplayName = user["display-name"];
         // Setting up the username of the author of the message
         const twitchUsername = user["username"];
+        // Setting up the channel/user ID of the author of the message
+        const twitchUserChannelId = await twitchGetChannelIdByUsername({ username: twitchUsername });
+        // Setting up the channel ID where Urghbot detected the message in
+        const twitchChannel = channel.replace("#", "");
+        const twitchChannelId = await twitchGetChannelIdByUsername({ username: twitchChannel });
         // Don't want to react to itself
         if (self) {
           return;
@@ -84,8 +91,7 @@ const initialOptions = {
         else if (isInUrghBotChannel(channel)) {
           // If people want Urghbot to join their channel
           if (message === "!join") {
-            const twitchChannelId = await twitchGetChannelIdByUsername({ username: twitchUsername });
-            const addedChannel = await addUrghbotToChannel({ channelName: twitchUsername, channelId: twitchChannelId });
+            const addedChannel = await addUrghbotToChannel({ channelId: twitchUserChannelId });
             if (!addedChannel) {
               client.say(channel, `${twitchDisplayName}, I'm already in your channel. Ugh.`);
             } else {
@@ -95,10 +101,8 @@ const initialOptions = {
           }
           // If people have Urghbot but want it to piss off
           if (message === "!leave") {
-            const twitchChannelId = await twitchGetChannelIdByUsername({ username: twitchUsername });
             const removedChannel = await removeUrghbotFromChannel({
-              channelName: twitchUsername,
-              channelId: twitchChannelId,
+              channelId: twitchUserChannelId,
             });
             if (!removedChannel) {
               client.say(channel, `${twitchDisplayName}, I've already left. Ugh.`);
@@ -110,7 +114,10 @@ const initialOptions = {
         }
         // If someone wants to have themselves ignored by urghbot
         else if (message === "!ignore") {
-          const ignoredUser = await addUserToIgnore({ username: twitchDisplayName });
+          const ignoredUser = await addUserToIgnore({
+            channelId: twitchChannelId,
+            userToIgnoreId: twitchUserChannelId,
+          });
           if (!ignoredUser) {
             client.say(channel, `${twitchDisplayName}, you're already being ignored. Ugh.`);
           } else {
@@ -119,7 +126,10 @@ const initialOptions = {
         }
         // If someone wants to be acknowledged by urghbot again
         else if (message === "!unignore") {
-          const unignoredUser = await removeUserToIgnore({ username: twitchDisplayName });
+          const unignoredUser = await removeUserToIgnore({
+            channelId: twitchChannelId,
+            userToIgnoreId: twitchUserChannelId,
+          });
           if (!unignoredUser) {
             client.say(channel, `${twitchDisplayName}, you weren't ignored in the first place. Ugh.`);
           } else {
@@ -168,7 +178,10 @@ const initialOptions = {
           const x = randInt(1, 200);
           if (x % 13 === 0) {
             // First check if the user is meant to be ignored or not
-            const userToIgnore = await findIgnoredUser({ username: twitchDisplayName });
+            const userToIgnore = await findIgnoredUser({
+              channelId: twitchChannelId,
+              userToIgnoreId: twitchUserChannelId,
+            });
             // If they are not found in the ignored user DB, then proceed to ugh their message
             if (!userToIgnore) {
               // If they are the lucky one, 'ugh'-ify the user's message (if there is a noun in it)
@@ -180,6 +193,7 @@ const initialOptions = {
           }
         }
       } catch (err) {
+        console.log(err);
         // For some reason this happens and it is a known issue in tmi.js, so just swallowing it for now
         if (err !== "No response from Twitch.") {
           client.say(channel, `I think we have a problem... Please contact MikamiHero.`);

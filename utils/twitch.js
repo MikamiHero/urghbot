@@ -37,4 +37,31 @@ const twitchGetChannelIdByUsername = async ({ username }) => {
   return twitchUser.data[0].id;
 };
 
-module.exports = { twitchGetChannelIdByUsername };
+const twitchGetUsernameByChannelId = async ({ channelId }) => {
+  // Auth for a bearer token
+  const twitchAuth = await twitchAuthenticate();
+  const twitchBearerToken = twitchAuth.access_token;
+  // Settting up the options for the request
+  const options = {
+    headers: {
+      "Content-Type": "application/json",
+      "client-id": twitchBotClientId,
+      Authorization: `Bearer ${twitchBearerToken}`,
+    },
+    uri: "https://api.twitch.tv/helix/users" + `?id=${channelId}`,
+    method: "GET",
+    json: true,
+  };
+  // Requesting for the Twitch user (which will contain their username)
+  const twitchUser = await rp(options);
+  return twitchUser.data[0].login;
+};
+
+const twitchGetAllChannelUsernames = async ({ channelIds }) => {
+  const twitchUsernames = await Promise.all(
+    channelIds.map(async (channelId) => await twitchGetUsernameByChannelId({ channelId }))
+  );
+  return twitchUsernames;
+};
+
+module.exports = { twitchGetChannelIdByUsername, twitchGetAllChannelUsernames };
