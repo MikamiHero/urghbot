@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 
 const ignoredUserSchema = new Schema(
   {
-    username: { type: String, required: true },
+    channelId: { type: Number, required: true },
+    userToIgnoreId: { type: Number, required: true },
   },
   {
     timestamps: true,
