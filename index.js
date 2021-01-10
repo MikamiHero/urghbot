@@ -68,7 +68,9 @@ const initialOptions = {
 
     // upon connecting, message the bot displays
     client.on("connected", (address, port) => {
-      client.say(masterChannel, "Ugh. I'm connected...");
+      twitchChannelsForUrghBot.forEach((channel) => {
+        client.say(channel, "Ugh. I'm connected...");
+      });
     });
 
     // Commands and/or certain character triggers
