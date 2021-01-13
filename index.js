@@ -60,8 +60,6 @@ const initialOptions = {
 
     // TODO: Make do a seed script in case it gets nuked?
     const options = { ...initialOptions, channels: twitchChannelsForUrghBot };
-    console.log(options);
-
     const client = new tmi.client(options);
 
     client.connect();
