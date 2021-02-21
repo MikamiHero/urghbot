@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
+    "dev": "node -r dotenv/config index.js",
     "startProd": "node index.js"
   },
   "author": "MikamiHero",
@@ -17,5 +17,8 @@
     "request-promise": "^4.2.6",
     "tmi.js": "^1.5.0",
     "wordpos": "^2.0.0"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0"
   }
 }
