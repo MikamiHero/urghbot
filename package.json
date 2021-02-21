@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node -r dotenv/config index.js",
-    "startProd": "node index.js"
+    "start": "node index.js"
   },
   "author": "MikamiHero",
   "license": "ISC",
