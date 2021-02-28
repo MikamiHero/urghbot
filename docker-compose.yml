@@ -1,0 +1,27 @@
+# Which version of Docker compose we're using
+version: "3"
+
+# Listing out the multiple containers
+services:
+  # This is the nodejs app
+  app:
+    build:
+      # Context = directory containing the Dockerfile
+      context: app
+      dockerfile: Dockerfile
+    # The nodejs app depends on the 'db' container
+    depends_on:
+      - db
+    # Mounted volumes for the application
+    volumes:
+      - ./app:/app
+    working_dir: /app
+  # This is the mongodb container
+  db:
+    image: mongo
+    restart: always
+    # Port forwarding 27017 (default for mongo)
+    ports:
+      - 27017:27017
+    volumes:
+      - ./db:/db
