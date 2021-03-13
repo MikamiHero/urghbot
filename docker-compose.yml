@@ -5,10 +5,20 @@ version: "3"
 services:
   # This is the nodejs app
   app:
+    # Name of the container
+    container_name: urghbot-node
     build:
       # Context = directory containing the Dockerfile
       context: app
       dockerfile: Dockerfile
+    # Environment variables
+    env_file: .env
+    environment:
+      - MONGODB_URGHBOT_URI=$MONGODB_URGHBOT_URI
+      - TWITCH_BOT_USERNAME=$TWITCH_BOT_USERNAME
+      - TWITCH_BOT_PASSWORD=$TWITCH_BOT_PASSWORD
+      - TWITCH_BOT_CLIENT_ID=$TWITCH_BOT_CLIENT_ID
+      - TWITCH_BOT_CLIENT_SECRET=$TWITCH_BOT_CLIENT_SECRET
     # The nodejs app depends on the 'db' container
     depends_on:
       - db
@@ -18,6 +28,8 @@ services:
     working_dir: /app
   # This is the mongodb container
   db:
+    # Name of the container once its built
+    container_name: urghbot-mongo
     image: mongo
     restart: always
     # Port forwarding 27017 (default for mongo)

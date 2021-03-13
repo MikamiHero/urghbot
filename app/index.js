@@ -40,18 +40,22 @@ const initialOptions = {
 (async () => {
   try {
     console.log("Welcome.");
-    // DB setup
-    await mongoose.connect(process.env.MONGODB_URGHBOT_URI || config.mongodbUrghBotURI, {
-      useNewUrlParser: true,
-      useCreateIndex: true,
-      useUnifiedTopology: true,
-    });
 
     // DB open listener
     const connection = mongoose.connection;
     await connection.once("open", () => {
-      console.log("Ugh. MongoDB database connection established successfully");
+      console.log("Ugh. MongoDB database connection is open and ready");
     });
+
+    // DB setup
+    await mongoose
+      .connect(process.env.MONGODB_URGHBOT_URI || config.mongodbUrghBotURI, {
+        useNewUrlParser: true,
+        useCreateIndex: true,
+        useUnifiedTopology: true,
+      })
+      .then(() => console.log("Ugh. MongoDB database connection connected!"));
+
     // Finding all the channels that Urghbot has permissions to interact in (from DB)
     const channels = await findAllChannelsForUrghbot();
     // For each channel ID, find their username (don't want to store because it can change)
