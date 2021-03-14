@@ -35,5 +35,6 @@ services:
     # Port forwarding 27017 (default for mongo)
     ports:
       - 27017:27017
+    # Binding './db' path to Mongo's data location in the container ("/data/db")
     volumes:
-      - ./db:/db
+      - ./db:/data/db
