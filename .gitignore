@@ -1,2 +1,4 @@
 node_modules
 .env
+urghbot_run.sh
+urghbot_build.sh
