@@ -38,12 +38,15 @@ const initialOptions = {
 };
 
 (async () => {
+  // Setting up some variables for ease of access later
+  useDebug = initialOptions.options.debug
+
   try {
     console.log("Welcome.");
+    console.log(`Debug mode: ${initialOptions.options.debug}`)
     // DB setup
     await mongoose.connect(process.env.MONGODB_URGHBOT_URI || config.mongodbUrghBotURI, {
       useNewUrlParser: true,
-      useCreateIndex: true,
       useUnifiedTopology: true,
     });
 
@@ -56,7 +59,8 @@ const initialOptions = {
     const channels = await findAllChannelsForUrghbot();
     // For each channel ID, find their username (don't want to store because it can change)
     const channelUsernames = await twitchGetAllChannelUsernames({ channelIds: channels });
-    const twitchChannelsForUrghBot = initialOptions.channels.concat(channelUsernames);
+    // If debugging, use only 'MikamiHero' and 'urghbot' as channels
+    const twitchChannelsForUrghBot = useDebug ? initialOptions.channels.concat([masterChannel]) : initialOptions.channels.concat(channelUsernames);
 
     // TODO: Make do a seed script in case it gets nuked?
     const options = { ...initialOptions, channels: twitchChannelsForUrghBot };
