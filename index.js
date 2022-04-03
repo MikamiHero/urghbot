@@ -95,24 +95,36 @@ const initialOptions = {
         else if (isInUrghBotChannel(channel)) {
           // If people want Urghbot to join their channel
           if (message === "!join") {
-            const addedChannel = await addUrghbotToChannel({ channelId: twitchUserChannelId });
-            if (!addedChannel) {
-              client.say(channel, `${twitchDisplayName}, I'm already in your channel. Ugh.`);
-            } else {
-              client.say(channel, `Ugh. What a drag. Fine... I'm now in your channel, ${twitchDisplayName}.`);
-              const joinedChannel = await client.join(twitchUsername);
+            // Make sure Urghbot doesn't rejoin its own channel (makes no sense)
+            if (twitchDisplayName == urghbotChannel) {
+              client.say(channel, "Ugh... Sick invite.");
+            }
+            else {
+              const addedChannel = await addUrghbotToChannel({ channelId: twitchUserChannelId });
+              if (!addedChannel) {
+                client.say(channel, `${twitchDisplayName}, I'm already in your channel. Ugh.`);
+              } else {
+                client.say(channel, `Ugh. What a drag. Fine... I'm now in your channel, ${twitchDisplayName}.`);
+                const joinedChannel = await client.join(twitchUsername);
+              }
             }
           }
           // If people have Urghbot but want it to piss off
           if (message === "!leave") {
-            const removedChannel = await removeUrghbotFromChannel({
-              channelId: twitchUserChannelId,
-            });
-            if (!removedChannel) {
-              client.say(channel, `${twitchDisplayName}, I've already left. Ugh.`);
-            } else {
-              client.say(channel, `Is this how you treat all your bots? Ugh. Fine <leaves ${twitchDisplayName}>`);
-              const leftChannel = await client.part(twitchUsername);
+            // Don't want Urghbot to leave its own channel
+            if (twitchDisplayName === urghbotChannel) {
+              client.say(channel, "Ugh... Trying to remove me from myself? Cheater.");
+            }
+            else {
+              const removedChannel = await removeUrghbotFromChannel({
+                channelId: twitchUserChannelId,
+              });
+              if (!removedChannel) {
+                client.say(channel, `${twitchDisplayName}, I've already left. Ugh.`);
+              } else {
+                client.say(channel, `Is this how you treat all your bots? Ugh. Fine <leaves ${twitchDisplayName}>`);
+                const leftChannel = await client.part(twitchUsername);
+              }
             }
           }
         }
