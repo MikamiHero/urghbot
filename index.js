@@ -14,6 +14,7 @@ const {
 const { twitchGetChannelIdByUsername, twitchGetAllChannelUsernames } = require("./utils/twitch");
 const { restartBot } = require("./utils/sys");
 const { isProperUrghCommand, isInUrghBotChannel } = require("./utils/urghLogic");
+const { getCubeScramble } = require("./utils/cube");
 
 // MikamiHero channel name
 const masterChannel = "MikamiHero";
@@ -151,6 +152,11 @@ const initialOptions = {
           } else {
             client.say(channel, `Ugh. Fine. <unignores ${twitchDisplayName}>`);
           }
+        }
+        // If someone wants to generate a cube scramble (3x3 only for now)
+        else if (message === "!scramble") {
+          const cubeScramble = getCubeScramble();
+          client.say(channel, `Ugh. More work? Fine... Here's your scramble: ${cubeScramble}`);
         }
         // If someone wants to praise UrghBot
         else if (message === "urghbot yes" || message === "@urghbot yes") {
