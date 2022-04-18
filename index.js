@@ -67,6 +67,10 @@ const initialOptions = {
     const options = { ...initialOptions, channels: twitchChannelsForUrghBot };
     const client = new tmi.client(options);
 
+    // Initialising the yawn and aiyo counter
+    var yawnCounter = 0;
+    var aiyoCounter = 0;
+
     client.connect();
 
     // upon connecting, message the bot displays
@@ -173,6 +177,26 @@ const initialOptions = {
         // If the message contains 'nah yeah' or 'nah yeah'
         else if (message.toLowerCase().includes("nah yeah") || message.toLowerCase().includes("nah yeah")) {
           client.say(channel, "Ugh. Yeah nah Kappa");
+        }
+        // If the message is !yawn or !aiyo (only in MikamiHero's channel)
+        else if (message === "!yawn") {
+          if (channel === "#mikamihero") { 
+            yawnCounter = yawnCounter + 1;
+            client.say(channel, `${masterChannel} has yawned ${yawnCounter} times. Ugh. Go to bed, strimmer.`);
+          }
+        }
+        else if (message === "!aiyo") {
+          if (channel === "#mikamihero") { 
+            aiyoCounter = aiyoCounter + 1;
+            client.say(channel, `${masterChannel} has aiyo'ed ${aiyoCounter} times.`);
+          }
+        }
+        // If the message is to reset the yawn counter and aiyo counters
+        else if (message === "!reset") {
+          if (twitchDisplayName === masterChannel) {
+            client.say(channel, `Ugh... fine. Counters have been reset!`);
+            yawnCounter = 0;
+          }
         }
         // If someone wants to 'ugh'/'urgh' themselves or something else
         else if (isProperUrghCommand(message) === true) {
