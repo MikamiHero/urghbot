@@ -24,7 +24,8 @@ const urghbotChannel = "urghbot";
 const initialOptions = {
   options: {
     // set debug: false in production
-    debug: config.useDebug,
+    //debug: config.useDebug,
+    debug: true,
   },
   connection: {
     reconnect: true,
