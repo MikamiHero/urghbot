@@ -180,6 +180,7 @@ const initialOptions = {
         }
         // If the message is !yawn or !aiyo (only in MikamiHero's channel)
         else if (message === "!yawn") {
+          client.say(channel, `Channel: ${channel}`);
           if (channel === "#mikamihero") { 
             yawnCounter = yawnCounter + 1;
             client.say(channel, `${masterChannel} has yawned ${yawnCounter} times. Ugh. Go to bed, strimmer.`);
